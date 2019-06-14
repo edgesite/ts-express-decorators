@@ -58,6 +58,8 @@ export class ConverterService {
         return obj;
       }
 
+      if (options.encode) obj = options.encode(obj);
+
       const converter = this.getConverter(obj);
       const serializer: ISerializer = (o: any, opt?: any) => this.serialize(o, Object.assign({}, options, opt));
 
@@ -144,6 +146,8 @@ export class ConverterService {
    */
   deserialize(obj: any, targetType: any, baseType?: any, options: IConverterOptions = {}): any {
     const {ignoreCallback, checkRequiredValue = true} = options;
+
+    if (options.decode) obj = options.decode(obj);
 
     try {
       if (ignoreCallback && ignoreCallback(obj, targetType, baseType)) {

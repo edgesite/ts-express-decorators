@@ -26,6 +26,8 @@ export interface ISerializer {
  */
 export interface IConverterOptions {
   type?: Type<any>;
+  encode?: (value: any) => any;
+  decode?: (encoded: any) => any;
   ignoreCallback?: IConverterIgnoreCB;
   checkRequiredValue?: boolean;
 }

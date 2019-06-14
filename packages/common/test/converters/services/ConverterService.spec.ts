@@ -557,4 +557,17 @@ describe("ConverterService", () => {
       });
     });
   });
+
+  describe('value transformer', () => {
+    const options = {
+      encode: (v: number) => `_${v}`,
+      decode: (e: string) => parseInt(e.substring(1), 10),
+    };
+    it('should handle encode transformer correctly', () => {
+      expect(converterService.serialize(1, options)).to.be.equal('_1');
+    });
+    it('should handle decode transformer correctly', () => {
+      expect(converterService.deserialize('_1', Number, Number, options)).to.be.equal(1);
+    });
+  })
 });

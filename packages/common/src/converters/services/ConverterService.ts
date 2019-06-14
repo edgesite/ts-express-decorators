@@ -58,6 +58,8 @@ export class ConverterService {
         return obj;
       }
 
+      if (options.encode) obj = options.encode(obj);
+
       const converter = this.getConverter(obj);
       const serializer: ISerializer = (o: any, opt?: any) => this.serialize(o, Object.assign({}, options, opt));
 
@@ -113,7 +115,8 @@ export class ConverterService {
 
         propertyMetadata = propertyMetadata || ({} as any);
         plainObject[propertyMetadata!.name || propertyKey] = this.serialize(obj[propertyKey], {
-          checkRequiredValue // ,
+          checkRequiredValue,
+          encode: propertyMetadata!.encode
           // TODO revert change
           // type: propertyMetadata!.type
         });
@@ -144,6 +147,8 @@ export class ConverterService {
    */
   deserialize(obj: any, targetType: any, baseType?: any, options: IConverterOptions = {}): any {
     const {ignoreCallback, checkRequiredValue = true} = options;
+
+    if (options.decode) obj = options.decode(obj);
 
     try {
       if (ignoreCallback && ignoreCallback(obj, targetType, baseType)) {
@@ -230,6 +235,8 @@ export class ConverterService {
 
     const propertyValue = obj[propertyMetadata!.name] || obj[propertyName];
     const propertyKey = propertyMetadata!.propertyKey || propertyName;
+
+    if (propertyMetadata!.decode) options.decode = propertyMetadata!.decode;
 
     try {
       if (typeof instance[propertyKey] !== "function") {

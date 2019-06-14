@@ -98,6 +98,8 @@ export function JsonProperty(options?: IPropertyOptions | string): Function {
       propertyMetadata.name = options as string;
     } else if (typeof options === "object") {
       propertyMetadata.name = options.name as string;
+      propertyMetadata.encode = options.encode;
+      propertyMetadata.decode = options.decode;
 
       if (!isEmpty((options as IPropertyOptions).use)) {
         propertyMetadata.type = (options as IPropertyOptions).use as Type<any>;

@@ -11,6 +11,14 @@ class JsonFoo5 {
   foo: any;
 }
 
+class CustomValueTransformer {
+  @JsonProperty({
+    encode: v => `_${1}`,
+    decode: (e) => parseInt(e.substring(1), 10),
+  })
+  id: number;
+}
+
 describe("ConverterService", () => {
   let converterService: ConverterService;
   before(
@@ -557,4 +565,23 @@ describe("ConverterService", () => {
       });
     });
   });
+
+  describe('value transformer', () => {
+    const options = {
+      encode: (v: number) => `_${v}`,
+      decode: (e: string) => parseInt(e.substring(1), 10),
+    };
+    it('should handle encode transformer correctly', () => {
+      expect(converterService.serialize(1, options)).to.be.equal('_1');
+    });
+    it('should handle decode transformer correctly', () => {
+      expect(converterService.deserialize('_1', Number, Number, options)).to.be.equal(1);
+    });
+    it('should apply JsonProperty definition', () => {
+      const inst = new CustomValueTransformer();
+      inst.id = 1;
+      expect(converterService.serializeClass(inst)).to.deep.eq({id: '_1'});
+      expect(converterService.deserialize({id: '_1'}, CustomValueTransformer as any)).to.deep.eq(inst);
+    });
+  })
 });

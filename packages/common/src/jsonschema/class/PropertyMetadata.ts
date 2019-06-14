@@ -14,6 +14,12 @@ export class PropertyMetadata extends Storable implements IPropertyOptions {
   @NotEnumerable()
   private _ignoreProperty: boolean = false;
 
+  @NotEnumerable()
+  private _encode: () => any;
+
+  @NotEnumerable()
+  private _decode: () => any;
+
   constructor(target: any, propertyKey: any) {
     super(target, propertyKey);
     this.store.set("schema", JsonSchemesRegistry.property(this.target, this.propertyKey as string, this.type, this.collectionType));
@@ -90,6 +96,22 @@ export class PropertyMetadata extends Storable implements IPropertyOptions {
    */
   set ignoreProperty(value: boolean) {
     this._ignoreProperty = value;
+  }
+
+  get encode() {
+    return this._encode;
+  }
+
+  set encode(fn: any) {
+    this._encode = fn;
+  }
+
+  get decode() {
+    return this._decode;
+  }
+
+  set decode(fn: any) {
+    this._decode = fn;
   }
 
   /**
